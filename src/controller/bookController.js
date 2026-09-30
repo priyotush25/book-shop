@@ -29,8 +29,33 @@ const addBook = async (req, res)=>{
         })
     }
 
-}
+};
+
+
+// Get all books
+const getAllBooks = async (req, res) => {
+    try {
+        const books = await Book.find();
+
+        res.status(200).json({
+            message: "Books fetched successfully",
+            count: books.length,
+            books: books
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            message: "Failed to fetch books"
+        });
+    }
+};
+
+
+
 
 module.exports = {
     addBook,
+    getAllBooks,
 };
