@@ -14,7 +14,8 @@ app.use(cors())
 connectDB();
 
 // Route
-app.use("api/auth", authRoutes)
+app.use("/api/auth", authRoutes)
+
 
 // route route
 app.get("/", (req, res)=>{
