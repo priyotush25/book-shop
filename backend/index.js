@@ -22,7 +22,7 @@ app.get("/", (req, res)=>{
 
 
 // Endpoint
-app.use("api/auth", authRoute)
+app.use("/api/auth", authRoute)
 
 
 

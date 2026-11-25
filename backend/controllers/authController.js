@@ -1,56 +1,55 @@
-
 import bcrypt from "bcrypt";
 import User from "../models/User.js";
 
-// Register User
-export const registerUser = async (req, res) => {
-    try {
-        const { name, email, password } = req.body;
 
-        // Check required fields
-        if (!name || !email || !password) {
-            return res.status(400).json({
+export const registerUser = async(req, res) =>{
+    try{
+        const {name, email, password} = req.body;
+
+        // require check
+        if(!name || !email || !password){
+            return res.json({
                 success: false,
-                message: "All fields are required"
-            });
+                message: "All fields are require"
+            })
         }
 
-        // Check existing user
-        const existingUser = await User.findOne({ email });
+        // existing user
+        const existingUser = await User.findOne({email});
 
-        if (existingUser) {
+        if(existingUser){
             return res.status(409).json({
                 success: false,
-                message: "Email already exists"
-            });
+                message: "User already exist"
+            })
         }
 
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
+        //hash password
+        const hashPassword = await bcrypt.hash(password, 10);
 
-        // Create user
+        //user create 
         const user = await User.create({
-            name,
+            name, 
             email,
-            password: hashedPassword
+            password: hashPassword
         });
-
-        // Success response
         res.status(201).json({
             success: true,
             message: "Registration successful",
-            user: {
-                id: user._id,
+           user: {
                 name: user.name,
                 email: user.email,
-                role: user.role
+                role: user.role,
+                password: user.password
             }
-        });
+        })
+        
 
-    } catch (err) {
+    }catch(error){
         res.status(500).json({
             success: false,
-            message: err.message
-        });
+            message: error.message
+        })
     }
-};
+}
+
