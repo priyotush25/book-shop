@@ -5,6 +5,8 @@ import connectDB from "./config/db.js";
 const app = express();
 dotenv.config();
 
+import authRoute from "./routes/authRoutes.js";
+
 const PORT = process.env.PORT || 4000;
 
 
@@ -17,6 +19,11 @@ app.use(cors());
 app.get("/", (req, res)=>{
     res.send("server is running!")
 })
+
+
+// Endpoint
+app.use("api/auth", authRoute)
+
 
 
 // mongodb connection 
