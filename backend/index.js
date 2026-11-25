@@ -26,6 +26,7 @@ app.use("/api/auth", authRoute)
 
 
 
+
 // mongodb connection 
 connectDB();
 

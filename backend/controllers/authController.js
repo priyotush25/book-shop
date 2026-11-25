@@ -2,13 +2,14 @@ import bcrypt from "bcrypt";
 import User from "../models/User.js";
 
 
+// Registration Controller
 export const registerUser = async(req, res) =>{
     try{
         const {name, email, password} = req.body;
 
         // require check
         if(!name || !email || !password){
-            return res.json({
+            return res.status(400).json({
                 success: false,
                 message: "All fields are require"
             })
@@ -53,3 +54,61 @@ export const registerUser = async(req, res) =>{
     }
 }
 
+
+// login Controller
+export const loginUser = async(req, res)=>{
+    try{
+        const {email, password} = req.body;
+
+        // require
+        if(!email || !password){
+            return res.status(400).json({
+                success: false,
+                message: "Email and Password are Require"
+            })
+        }
+
+        // Find user
+        const user = await User.findOne({email: email});
+
+        if(!user){
+            return res.status(400).json({
+                success: false,
+                message: "Invalid Email or Password"
+            })
+        }
+
+        // compare password
+        const isMatchPassword = await bcrypt.compare(
+            password,
+            user.password
+        );
+
+        if(!isMatchPassword){
+            return res.status(401).json({
+                success: false,
+                message: "Invalid Password"
+            })
+        }
+
+
+        // Login successful
+        return res.status(200).json({
+            success: true,
+            message: "Login successful",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
+        })
+
+    
+    }catch(error){
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
