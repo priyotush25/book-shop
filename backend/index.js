@@ -1,11 +1,10 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+const app = express();
+dotenv.config();
 
 const PORT = process.env.PORT || 4000;
-
-dotenv.config();
-const app = express();
 
 
 // middleware
