@@ -6,6 +6,7 @@ const app = express();
 dotenv.config();
 
 import authRoute from "./routes/authRoutes.js";
+import bookRoute from "./routes/bookRoutes.js";
 
 const PORT = process.env.PORT || 4000;
 
@@ -23,11 +24,12 @@ app.get("/", (req, res)=>{
 
 // Endpoint
 app.use("/api/auth", authRoute)
+app.use("/api/books", bookRoute);
 
 
 
 
-// mongodb connection 
+// mongodb connection
 connectDB();
 
 

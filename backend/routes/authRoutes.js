@@ -7,11 +7,8 @@ const router = express.Router();
 // Register endpoint
 router.post("/register", registerUser);
 
-
-
 // Login endpoint
-router.get("/login", loginUser)
-
+router.post("/login", loginUser);   
 
 
 // Protected API
@@ -22,6 +19,8 @@ router.get("/profile", authMiddleware, (req, res) => {
         user: req.user
     });
 });
+
+
 
 
 export default router;
