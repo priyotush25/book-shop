@@ -71,3 +71,89 @@ export const getAllBooks = async(req, res) =>{
         })
     }
 }
+
+
+// get book by id controller
+export const getBookById = async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found"
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book fetched successfully",
+      book
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+
+  }
+}
+
+
+// get book by category controller
+export const getBookByCategory = async(req, res) => {
+  try {
+    const {category} = await req.params;
+
+    const book = await Book.find({category});
+
+    if (!book || book.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found"
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book fetched successfully",
+      book
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+// get book by author controller
+export const getBookByAuthor = async (req, res) => {
+  try {
+    const { author } = await req.params;
+    const book = await Book.find({ author });
+
+    if (!book || book.length == 0) {
+      res.status(404).json({
+        success: false,
+        message: "Book not found"
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Book fatech successfully",
+      book
+    })
+
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+
+}

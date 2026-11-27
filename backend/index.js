@@ -35,5 +35,7 @@ connectDB();
 
 // server start
 app.listen(PORT, ()=>{
-    console.log(`server is running : ${PORT}`)
+    console.log(`server is running : http://localhost:${PORT}`)
 })
+
+
