@@ -301,3 +301,70 @@ export const getBooksByPublisher = async (req, res) => {
     })
   }
 }
+
+
+// Get Book by ISBN
+export const getBooksByISBN = async (req, res) => {
+  try {
+    const { isbn } = req.params;
+    const book = await Book.find({ ISBN: isbn });
+
+    if (!book || book.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "book not found"
+      })
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "book found successfully",
+      book
+    })
+
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+
+// Get Books by Price Range
+export const getBooksByPrice = async (req, res) => {
+  try {
+    const { minPrice, maxPrice } = req.body;
+
+
+    const min = Number(minPrice);
+    const max = Number(maxPrice);
+
+    const book = await Book.find({
+      price: {
+        $gte: min,
+        $lte: max
+      }
+    })
+
+    if (book.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "book not found"
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Book found successfully",
+      book
+    })
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
