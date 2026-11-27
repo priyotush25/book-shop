@@ -2,7 +2,9 @@
 import Book from "../models/Book.js";
 
 
-// add book controller
+//Book CRUD Endpoints
+
+// Add Book controller
 export const addBook = async(req, res)=>{
     try{
         const {title, author, description, price, category, image, ISBN, publisher} = req.body;
@@ -27,7 +29,7 @@ export const addBook = async(req, res)=>{
             publisher
         });
 
-        res.status(201).json({
+      return  res.status(201).json({
             success: true,
             message: "Book added successfully",
             book
@@ -43,7 +45,7 @@ export const addBook = async(req, res)=>{
     }
 }
 
-// get all books controller
+// Get all books controller
 export const getAllBooks = async(req, res) =>{
     try{
 
@@ -57,7 +59,7 @@ export const getAllBooks = async(req, res) =>{
         }
 
 
-        res.status(200).json({
+      return  res.status(200).json({
             success: true,
             message: "All books fetched successfully",
             books
@@ -72,8 +74,7 @@ export const getAllBooks = async(req, res) =>{
     }
 }
 
-
-// get book by id controller
+// Get book by ID controller
 export const getBookById = async (req, res) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -85,7 +86,7 @@ export const getBookById = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+  return  res.status(200).json({
       success: true,
       message: "Book fetched successfully",
       book
@@ -100,8 +101,79 @@ export const getBookById = async (req, res) => {
   }
 }
 
+//Update book controller
+export const updateBook = async (req, res) => {
+  try {
 
-// get book by category controller
+    const id = await req.params.id;
+    const book = await Book.findById(id);
+
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: "book not found"
+      })
+    }
+
+    for (const key in req.body) {
+      if (req.body.hasOwnProperty(key)) {
+        book[key] = req.body[key];
+      }
+    }
+
+    await book.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Book update successfully",
+      book
+    })
+
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+// Delete book controller
+export const deleteBook = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const book = await Book.findByIdAndDelete(id)
+
+    if (!book) {
+      return res.status(404).json({
+        success: false,
+        message: "Book not found"
+      })
+    }
+
+   return res.status(200).json({
+      success: true,
+      message: "Book delete successfully"
+    })
+
+
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+
+
+
+
+
+// Search & Filter Endpoints//
+
+// Get book by category controller
 export const getBookByCategory = async(req, res) => {
   try {
     const {category} = await req.params;
@@ -109,14 +181,14 @@ export const getBookByCategory = async(req, res) => {
     const book = await Book.find({category});
 
     if (!book || book.length === 0) {
-      res.status(404).json({
+     return res.status(404).json({
         success: false,
         message: "Book not found"
       })
     }
 
-    res.status(200).json({
-      success: true,
+    return res.status(200).json({
+    success: true,
       message: "Book fetched successfully",
       book
     })
@@ -136,13 +208,13 @@ export const getBookByAuthor = async (req, res) => {
     const book = await Book.find({ author });
 
     if (!book || book.length == 0) {
-      res.status(404).json({
+    return  res.status(404).json({
         success: false,
         message: "Book not found"
       })
     }
 
-    res.status(200).json({
+   return res.status(200).json({
       success: true,
       message: "Book fatech successfully",
       book
