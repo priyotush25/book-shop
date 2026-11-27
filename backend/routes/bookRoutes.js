@@ -1,5 +1,5 @@
 import express from 'express';
-import {addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, updateBook} from "../controllers/bookController.js";
+import { addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, getBookByTitle, updateBook } from "../controllers/bookController.js";
 
 
 const router = express.Router();
@@ -26,7 +26,8 @@ router.get("/category/:category", getBookByCategory);
 // Get book by author endpoint
 router.get("/author/:author", getBookByAuthor);
 
-//
+//Get book by title endpoint
+router.get("/title/:title", getBookByTitle)
 
 
 
