@@ -10,14 +10,8 @@ router.post("/add", addBook);
 // Get all books endpoint
 router.get("/", getAllBooks);
 
-// Get book by ID endpoint
-router.get("/:id", getBookById);
-
-// Update Book endpoint
-router.put("/:id", updateBook);
-
-// Delete Book
-router.delete("/:id", deleteBook);
+// Get book by Price
+router.get("/price", getBooksByPrice)
 
 
 // Get book by category endpoint
@@ -36,8 +30,18 @@ router.get("/publisher/:publisher", getBooksByPublisher);
 // Get book by ISBN endpoint
 router.get("/isbn/:isbn", getBooksByISBN)
 
-// Get book by Price
-router.get("/price/:price", getBooksByPrice)
+
+// Get book by ID endpoint
+router.get("/:id", getBookById);
+
+// Update Book endpoint
+router.put("/:id", updateBook);
+
+// Delete Book
+router.delete("/:id", deleteBook);
+
+
+
 
 
 export default router;

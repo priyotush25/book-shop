@@ -337,34 +337,53 @@ export const getBooksByPrice = async (req, res) => {
   try {
     const { minPrice, maxPrice } = req.body;
 
-
+    // Convert String to Number
     const min = Number(minPrice);
     const max = Number(maxPrice);
 
-    const book = await Book.find({
+    // Validation
+    if (
+      minPrice === undefined ||
+      maxPrice === undefined ||
+      !Number.isFinite(min) ||
+      !Number.isFinite(max) ||
+      min < 0 ||
+      max < min
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid price range"
+      });
+    }
+
+    // Find Books
+    const books = await Book.find({
       price: {
         $gte: min,
         $lte: max
       }
-    })
+    });
 
-    if (book.length === 0) {
+    // Check Books
+    if (books.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "book not found"
-      })
+        message: "No books found in this price range"
+      });
     }
 
+    // Success Response
     return res.status(200).json({
       success: true,
-      message: "Book found successfully",
-      book
-    })
+      message: "Books found successfully",
+      totalBooks: books.length,
+      books
+    });
 
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message
-    })
+    });
   }
-}
+};
