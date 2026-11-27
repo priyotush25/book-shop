@@ -235,7 +235,12 @@ export const getBookByAuthor = async (req, res) => {
 export const getBookByTitle = async (req, res) => {
   try {
     const { title } = req.params;
-    const book = await Book.find({ title });
+    const book = await Book.find({
+      title: {
+        $regex: title,
+        $option: "i"
+      }
+    });
 
     if (!book || book.length === 0) {
       return res.status(404).json(
@@ -249,6 +254,41 @@ export const getBookByTitle = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "book found successfully",
+      book
+    })
+
+
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
+// Get Books by Publisher
+export const getBooksByPublisher = async (req, res) => {
+  try {
+
+    const { publisher } = req.params;
+    const book = await Book.find({
+      publisher: {
+        $regex: publisher,
+        $options: "i"
+      }
+    })
+
+    if (!book || book.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "book not found"
+      })
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "get book successfully",
       book
     })
 
