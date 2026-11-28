@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { Link } from "react-router";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -9,6 +10,7 @@ const Navbar = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     setShowProfile(false);
+    setShowMenu(false);
   };
 
   return (
@@ -18,28 +20,28 @@ const Navbar = () => {
         <div className="flex items-center justify-between">
 
           {/* Logo */}
-          <div className="text-2xl font-bold text-sky-400">
+          <Link to="/" className="text-2xl font-bold text-sky-400">
             BookStore
-          </div>
+          </Link>
 
           {/* Desktop Navigation */}
           <ul className="hidden md:flex items-center gap-8">
             <li>
-              <a href="/" className="hover:text-sky-400 transition">
+              <Link to="/" className="hover:text-sky-400 transition">
                 Home
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="/books" className="hover:text-sky-400 transition">
+              <Link to="/books" className="hover:text-sky-400 transition">
                 Books
-              </a>
+              </Link>
             </li>
 
             <li>
-              <a href="/about" className="hover:text-sky-400 transition">
+              <Link to="/about" className="hover:text-sky-400 transition">
                 About
-              </a>
+              </Link>
             </li>
           </ul>
 
@@ -47,12 +49,12 @@ const Navbar = () => {
           <div className="hidden md:block relative">
 
             {!isLoggedIn ? (
-              <button
-                onClick={() => setIsLoggedIn(true)}
-                className="bg-sky-500 hover:bg-sky-600 px-5 py-2 rounded-lg font-medium transition"
+              <Link
+                to="/login"
+                className="inline-block bg-sky-500 hover:bg-sky-600 px-5 py-2 rounded-lg font-medium transition"
               >
                 Login
-              </button>
+              </Link>
             ) : (
               <div>
                 <button
@@ -69,19 +71,19 @@ const Navbar = () => {
                       My Account
                     </p>
 
-                    <a
-                      href="/profile"
+                    <Link
+                      to="/profile"
                       className="block px-4 py-2 hover:bg-slate-100"
                     >
                       Profile
-                    </a>
+                    </Link>
 
-                    <a
-                      href="/orders"
+                    <Link
+                      to="/orders"
                       className="block px-4 py-2 hover:bg-slate-100"
                     >
                       My Orders
-                    </a>
+                    </Link>
 
                     <button
                       onClick={handleLogout}
@@ -94,7 +96,6 @@ const Navbar = () => {
                 )}
               </div>
             )}
-
           </div>
 
           {/* Mobile Menu Button */}
@@ -109,37 +110,40 @@ const Navbar = () => {
 
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Navigation */}
         {showMenu && (
           <div className="md:hidden mt-4 border-t border-slate-700 pt-4">
-
             <div className="flex flex-col gap-4">
-              <a href="/" className="hover:text-sky-400">
+
+              <Link to="/" onClick={() => setShowMenu(false)}>
                 Home
-              </a>
+              </Link>
 
-              <a href="/books" className="hover:text-sky-400">
+              <Link to="/books" onClick={() => setShowMenu(false)}>
                 Books
-              </a>
+              </Link>
 
-              <a href="/about" className="hover:text-sky-400">
+              <Link to="/about" onClick={() => setShowMenu(false)}>
                 About
-              </a>
+              </Link>
 
               {!isLoggedIn ? (
-                <button
-                  onClick={() => {
-                    setIsLoggedIn(true);
-                    setShowMenu(false);
-                  }}
-                  className="bg-sky-500 px-4 py-2 rounded-lg"
+                <Link
+                  to="/login"
+                  onClick={() => setShowMenu(false)}
+                  className="bg-sky-500 px-4 py-2 rounded-lg text-center"
                 >
                   Login
-                </button>
+                </Link>
               ) : (
                 <>
-                  <a href="/profile">My Profile</a>
-                  <a href="/orders">My Orders</a>
+                  <Link to="/profile" onClick={() => setShowMenu(false)}>
+                    My Profile
+                  </Link>
+
+                  <Link to="/orders" onClick={() => setShowMenu(false)}>
+                    My Orders
+                  </Link>
 
                   <button
                     onClick={handleLogout}
@@ -149,8 +153,8 @@ const Navbar = () => {
                   </button>
                 </>
               )}
-            </div>
 
+            </div>
           </div>
         )}
 
