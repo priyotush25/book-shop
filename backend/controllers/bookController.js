@@ -161,6 +161,58 @@ export const sortBooks = async(req, res)=>{
   }
 }
 
+
+// search books
+export const searchBooks = async(req, res)=>{
+  try{
+    const {search} = req.query;
+
+    if(!search || !search.trim()){
+      return res.status(400).json({
+        success: false,
+        message: "invalid search"
+      })
+    }
+
+    const books = await Book.find({
+      $or: [
+        {
+          title: {
+            $regex: search.trim(),
+            $options: "i"
+          }
+        },
+                {
+          author: {
+            $regex: search.trim(),
+            $options: "i"
+          }
+        }
+      ]
+    });
+
+       if (books.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No books found"
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Books found successfully",
+      totalBooks: books.length,
+      books
+    });
+
+  }catch(error){
+    res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
+}
+
 // Get book by ID controller
 export const getBookById = async (req, res) => {
   try {

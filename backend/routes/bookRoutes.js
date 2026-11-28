@@ -1,5 +1,5 @@
 import express from 'express';
-import { addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, getBookByTitle, getBooksByISBN, getBooksByPrice, getBooksByPublisher, sortBooks, updateBook } from "../controllers/bookController.js";
+import { addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, getBookByTitle, getBooksByISBN, getBooksByPrice, getBooksByPublisher, searchBooks, sortBooks, updateBook } from "../controllers/bookController.js";
 
 
 const router = express.Router();
@@ -16,6 +16,8 @@ router.get("/sort", sortBooks)
 // Get book by Price
 router.get("/price", getBooksByPrice)
 
+// search book
+router.get("/search", searchBooks);
 
 // Get book by category endpoint
 router.get("/category/:category", getBookByCategory);
