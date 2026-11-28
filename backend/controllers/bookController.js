@@ -1,20 +1,39 @@
-
 import Book from "../models/Book.js";
-
 
 //Book CRUD Endpoints
 
 // Add Book controller
 export const addBook = async (req, res) => {
   try {
-    const { title, author, description, price, category, image, ISBN, publisher } = req.body;
+    const {
+      title,
+      author,
+      description,
+      price,
+      category,
+      image,
+      ISBN,
+      publisher,
+    } = req.body;
 
     // require
-    if (!title || !author || !description || !price || !category || !image || !ISBN || !publisher) {
+    if (
+      !title ||
+      !author ||
+      !description ||
+      !Number.isFinite(Number(price)) ||
+      Number(price) < 0 ||
+      !price == undefined ||
+      !price == null ||
+      !category ||
+      !image ||
+      !ISBN ||
+      !publisher
+    ) {
       return res.status(400).json({
         success: false,
-        message: "All fields are required"
-      })
+        message: "All fields are required",
+      });
     }
 
     // create book
@@ -26,53 +45,77 @@ export const addBook = async (req, res) => {
       category,
       image,
       ISBN,
-      publisher
+      publisher,
     });
 
     return res.status(201).json({
       success: true,
       message: "Book added successfully",
-      book
+      book,
     });
-
-
-
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // Get all books controller
 export const getAllBooks = async (req, res) => {
   try {
+    // Step 1: Get Query Parameters
+    const page = Number(req.query.page ?? 1);
+    const limit = Number(req.query.limit ?? 5);
 
-    const books = await Book.find();
-
-    if (books.length === 0) {
-      return res.status(404).json({
+    // Step 2: Validation
+    if (
+      !Number(page) ||
+      !Number(limit) ||
+      page > 1 ||
+      limit < 1 ||
+      limit > 100
+    ) {
+      return res.status(400).json({
         success: false,
-        message: "No books found"
-      })
+        message: "Input invalid Page and limit",
+      });
     }
 
+    // Step 3: Calculate Skip
+    const skip = (page - 1) * limit;
 
+    // Step 4: Get Total Books and Paginated Books
+    const [totalBooks, books] = await Promise.all([
+      Book.countDocuments(),
+      Book.find().sort({ _id: -1 }).skip(skip).limit(limit),
+    ]);
+
+    // Step 5: Calculate Total Pages
+    const totalPages = Math.ceil(totalBooks / limit);
+
+    // Step 6: Response
     return res.status(200).json({
       success: true,
-      message: "All books fetched successfully",
-      books
-    })
+      message: "Books fetched successfully",
 
-
+      pagination: {
+        totalBooks,
+        totalPages,
+        currentPage: page,
+        limit,
+        hasNextPage: page < totalPages,
+        hasPrevPage: page > 1,
+      },
+      books,
+    });
   } catch (error) {
-    res.status(500).json({
+    res.json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // Get book by ID controller
 export const getBookById = async (req, res) => {
@@ -82,37 +125,34 @@ export const getBookById = async (req, res) => {
     if (!book) {
       return res.status(404).json({
         success: false,
-        message: "Book not found"
+        message: "Book not found",
       });
     }
 
     return res.status(200).json({
       success: true,
       message: "Book fetched successfully",
-      book
+      book,
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
-
+      message: error.message,
+    });
   }
-}
+};
 
 //Update book controller
 export const updateBook = async (req, res) => {
   try {
-
-    const id = await req.params.id;
+    const id = req.params.id;
     const book = await Book.findById(id);
 
     if (!book) {
       return res.status(404).json({
         success: false,
-        message: "book not found"
-      })
+        message: "book not found",
+      });
     }
 
     for (const key in req.body) {
@@ -126,80 +166,69 @@ export const updateBook = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Book update successfully",
-      book
-    })
-
-
+      book,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // Delete book controller
 export const deleteBook = async (req, res) => {
   try {
     const id = req.params.id;
-    const book = await Book.findByIdAndDelete(id)
+    const book = await Book.findByIdAndDelete(id);
 
     if (!book) {
       return res.status(404).json({
         success: false,
-        message: "Book not found"
-      })
+        message: "Book not found",
+      });
     }
 
     return res.status(200).json({
       success: true,
-      message: "Book delete successfully"
-    })
-
-
-
+      message: "Book delete successfully",
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
-
-
-
-
-
+};
 
 // Search & Filter Endpoints//
 
 // Get book by category controller
 export const getBookByCategory = async (req, res) => {
   try {
-    const { category } = await req.params;
+    const { category } = req.params;
 
     const book = await Book.find({ category });
 
     if (!book || book.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Book not found"
-      })
+        message: "Book not found",
+      });
     }
 
     return res.status(200).json({
       success: true,
       message: "Book fetched successfully",
-      book
-    })
-
+      book,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // get book by author controller
 export const getBookByAuthor = async (req, res) => {
@@ -210,26 +239,22 @@ export const getBookByAuthor = async (req, res) => {
     if (!book || book.length == 0) {
       return res.status(404).json({
         success: false,
-        message: "Book not found"
-      })
+        message: "Book not found",
+      });
     }
 
     return res.status(200).json({
       success: true,
       message: "Book fatech successfully",
-      book
-    })
-
-
+      book,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-
-}
-
+};
 
 // Search Books by Title
 export const getBookByTitle = async (req, res) => {
@@ -238,70 +263,60 @@ export const getBookByTitle = async (req, res) => {
     const book = await Book.find({
       title: {
         $regex: title,
-        $option: "i"
-      }
+        $options: "i",
+      },
     });
 
     if (!book || book.length === 0) {
-      return res.status(404).json(
-        {
-          success: false,
-          message: "Book not found"
-        }
-      )
+      return res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
     }
 
     return res.status(200).json({
       success: true,
       message: "book found successfully",
-      book
-    })
-
-
-
+      book,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
+};
 
 // Get Books by Publisher
 export const getBooksByPublisher = async (req, res) => {
   try {
-
     const { publisher } = req.params;
     const book = await Book.find({
       publisher: {
         $regex: publisher,
-        $options: "i"
-      }
-    })
+        $options: "i",
+      },
+    });
 
     if (!book || book.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "book not found"
-      })
+        message: "book not found",
+      });
     }
 
     return res.status(200).json({
       success: true,
       message: "get book successfully",
-      book
-    })
-
-
-
+      book,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
-
+};
 
 // Get Book by ISBN
 export const getBooksByISBN = async (req, res) => {
@@ -312,25 +327,22 @@ export const getBooksByISBN = async (req, res) => {
     if (!book || book.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "book not found"
-      })
+        message: "book not found",
+      });
     }
 
     res.status(200).json({
       success: true,
       message: "book found successfully",
-      book
-    })
-
-
+      book,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
-    })
+      message: error.message,
+    });
   }
-}
-
+};
 
 // Get Books by Price Range
 export const getBooksByPrice = async (req, res) => {
@@ -352,7 +364,7 @@ export const getBooksByPrice = async (req, res) => {
     ) {
       return res.status(400).json({
         success: false,
-        message: "Please provide a valid price range"
+        message: "Please provide a valid price range",
       });
     }
 
@@ -360,15 +372,15 @@ export const getBooksByPrice = async (req, res) => {
     const books = await Book.find({
       price: {
         $gte: min,
-        $lte: max
-      }
+        $lte: max,
+      },
     });
 
     // Check Books
     if (books.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "No books found in this price range"
+        message: "No books found in this price range",
       });
     }
 
@@ -377,13 +389,12 @@ export const getBooksByPrice = async (req, res) => {
       success: true,
       message: "Books found successfully",
       totalBooks: books.length,
-      books
+      books,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
