@@ -1,60 +1,65 @@
-import express from 'express';
-import { addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, getBookByTitle, getBooksByISBN, getBooksByPrice, getBooksByPublisher, searchBooks, sortBooks, updateBook } from "../controllers/bookController.js";
 
+import express from "express";
+
+import {
+  addBook,
+  deleteBook,
+  filterBooksByCategory,
+  getAllBooks,
+  getBookByAuthor,
+  getBookByCategory,
+  getBookById,
+  getBookByTitle,
+  getBooksByISBN,
+  getBooksByPrice,
+  getBooksByPublisher,
+  searchBooks,
+  sortBooks,
+  updateBook
+} from "../controllers/bookController.js";
 
 const router = express.Router();
 
-// Add book endpoint
+// Add Book
 router.post("/add", addBook);
 
-// Get all books endpoint
+// Get All Books
 router.get("/", getAllBooks);
 
-// sortBooks
-router.get("/sort", sortBooks)
+// Sorting
+router.get("/sort", sortBooks);
 
-// Get book by Price
-router.get("/price", getBooksByPrice)
+// Price Filter
+router.get("/price", getBooksByPrice);
 
-// search book
+// Advanced Search
 router.get("/search", searchBooks);
 
-// Get book by category endpoint
+// Category Filter
+router.get("/filter", filterBooksByCategory);
+
+// Get Book by Category
 router.get("/category/:category", getBookByCategory);
 
-// Get book by author endpoint
+// Get Book by Author
 router.get("/author/:author", getBookByAuthor);
 
-//Get book by title endpoint
+// Get Book by Title
 router.get("/title/:title", getBookByTitle);
 
-// Get book by publisher endpoint
+// Get Book by Publisher
 router.get("/publisher/:publisher", getBooksByPublisher);
 
+// Get Book by ISBN
+router.get("/isbn/:isbn", getBooksByISBN);
 
-// Get book by ISBN endpoint
-router.get("/isbn/:isbn", getBooksByISBN)
-
-
-// Get book by ID endpoint
+// Get Book by ID
 router.get("/:id", getBookById);
 
-// Update Book endpoint
+// Update Book
 router.put("/:id", updateBook);
 
 // Delete Book
 router.delete("/:id", deleteBook);
 
-
-
-
-
 export default router;
-
-
-
-
-
-
-
-
