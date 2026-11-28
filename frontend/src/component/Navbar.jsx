@@ -2,6 +2,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 
+import Container from "./Container";
+import Button from "./Button";
+
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
@@ -13,14 +16,21 @@ const Navbar = () => {
     setShowMenu(false);
   };
 
+  const closeMobileMenu = () => {
+    setShowMenu(false);
+  };
+
   return (
     <nav className="bg-slate-900 text-white shadow-lg">
-      <div className="max-w-7xl mx-auto px-6 py-4">
+      <Container className="py-4">
 
         <div className="flex items-center justify-between">
 
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-sky-400">
+          <Link
+            to="/"
+            className="text-2xl font-bold text-sky-400"
+          >
             BookStore
           </Link>
 
@@ -45,27 +55,28 @@ const Navbar = () => {
             </li>
           </ul>
 
-          {/* Login / Profile */}
+          {/* Desktop Login / Profile */}
           <div className="hidden md:block relative">
 
             {!isLoggedIn ? (
-              <Link
-                to="/login"
-                className="inline-block bg-sky-500 hover:bg-sky-600 px-5 py-2 rounded-lg font-medium transition"
+              <Button
+                onClick={() => (window.location.href = "/login")}
+                className="px-5 py-2"
               >
                 Login
-              </Link>
+              </Button>
             ) : (
               <div>
-                <button
+                <Button
+                  variant="secondary"
                   onClick={() => setShowProfile(!showProfile)}
-                  className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded-lg transition"
+                  className="bg-slate-700 text-white hover:bg-slate-600"
                 >
                   My Profile ▼
-                </button>
+                </Button>
 
                 {showProfile && (
-                  <div className="absolute right-0 mt-3 w-48 bg-white text-slate-800 rounded-lg shadow-xl overflow-hidden">
+                  <div className="absolute right-0 mt-3 w-48 bg-white text-slate-800 rounded-lg shadow-xl overflow-hidden z-50">
 
                     <p className="px-4 py-3 font-semibold border-b">
                       My Account
@@ -73,6 +84,7 @@ const Navbar = () => {
 
                     <Link
                       to="/profile"
+                      onClick={() => setShowProfile(false)}
                       className="block px-4 py-2 hover:bg-slate-100"
                     >
                       Profile
@@ -80,6 +92,7 @@ const Navbar = () => {
 
                     <Link
                       to="/orders"
+                      onClick={() => setShowProfile(false)}
                       className="block px-4 py-2 hover:bg-slate-100"
                     >
                       My Orders
@@ -115,42 +128,45 @@ const Navbar = () => {
           <div className="md:hidden mt-4 border-t border-slate-700 pt-4">
             <div className="flex flex-col gap-4">
 
-              <Link to="/" onClick={() => setShowMenu(false)}>
+              <Link to="/" onClick={closeMobileMenu}>
                 Home
               </Link>
 
-              <Link to="/books" onClick={() => setShowMenu(false)}>
+              <Link to="/books" onClick={closeMobileMenu}>
                 Books
               </Link>
 
-              <Link to="/about" onClick={() => setShowMenu(false)}>
+              <Link to="/about" onClick={closeMobileMenu}>
                 About
               </Link>
 
               {!isLoggedIn ? (
                 <Link
                   to="/login"
-                  onClick={() => setShowMenu(false)}
-                  className="bg-sky-500 px-4 py-2 rounded-lg text-center"
+                  onClick={closeMobileMenu}
+                  className="block"
                 >
-                  Login
+                  <Button className="w-full">
+                    Login
+                  </Button>
                 </Link>
               ) : (
                 <>
-                  <Link to="/profile" onClick={() => setShowMenu(false)}>
+                  <Link to="/profile" onClick={closeMobileMenu}>
                     My Profile
                   </Link>
 
-                  <Link to="/orders" onClick={() => setShowMenu(false)}>
+                  <Link to="/orders" onClick={closeMobileMenu}>
                     My Orders
                   </Link>
 
-                  <button
+                  <Button
+                    variant="danger"
                     onClick={handleLogout}
-                    className="bg-red-600 px-4 py-2 rounded-lg"
+                    className="w-full"
                   >
                     Logout
-                  </button>
+                  </Button>
                 </>
               )}
 
@@ -158,7 +174,7 @@ const Navbar = () => {
           </div>
         )}
 
-      </div>
+      </Container>
     </nav>
   );
 };
