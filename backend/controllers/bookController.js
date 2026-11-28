@@ -117,6 +117,50 @@ export const getAllBooks = async (req, res) => {
   }
 };
 
+// Get books by sort
+export const sortBooks = async(req, res)=>{
+  try{
+    const {sortBy = "title", order = "asc"} = req.query;
+    const allowFields = [
+      "title", "author", "publisher", "price"
+    ]
+
+    if(!allowFields.includes(sortBy)){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid sorting field"
+      })
+    }
+
+    if(!["desc", "asc"].includes(order)){
+      return res.status(400).json({
+        success: false,
+        message: "Invalid order field"
+      })
+    }
+
+    const sortOrder = order === "asc" ? 1 : -1;
+
+    const books = await Book.find().sort({
+      [sortBy]: sortOrder
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Books sorted successfully",
+      totalBooks: books.length,
+      books
+    });
+
+  }catch(error){
+    res.status(500).json({
+    success: false,
+    message: error.message
+    })
+
+  }
+}
+
 // Get book by ID controller
 export const getBookById = async (req, res) => {
   try {

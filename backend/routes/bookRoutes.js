@@ -1,5 +1,5 @@
 import express from 'express';
-import { addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, getBookByTitle, getBooksByISBN, getBooksByPrice, getBooksByPublisher, updateBook } from "../controllers/bookController.js";
+import { addBook, deleteBook, getAllBooks, getBookByAuthor, getBookByCategory, getBookById, getBookByTitle, getBooksByISBN, getBooksByPrice, getBooksByPublisher, sortBooks, updateBook } from "../controllers/bookController.js";
 
 
 const router = express.Router();
@@ -9,6 +9,9 @@ router.post("/add", addBook);
 
 // Get all books endpoint
 router.get("/", getAllBooks);
+
+// sortBooks
+router.get("/sort", sortBooks)
 
 // Get book by Price
 router.get("/price", getBooksByPrice)
